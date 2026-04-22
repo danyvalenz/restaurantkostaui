@@ -1,0 +1,8 @@
+@import 'tailwindcss';
+/* import Konsta UI theme */
+@import 'konsta/react/theme.css';
+@theme {
+  --color-brand-primary: #007aff;
+  --color-brand-red: #ff0000;
+  --color-brand-green: #00ff00;
+}
