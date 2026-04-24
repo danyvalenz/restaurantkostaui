@@ -1,9 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { App as AppKonstaUI, Toolbar, Link, Icon } from 'konsta/react';
-import { MdRestaurantMenu, MdSearch, MdReceiptLong, MdAccountCircle } from 'react-icons/md';
+import { MdRestaurantMenu, MdSearch, MdReceiptLong } from 'react-icons/md';
 import OrdersPage from './pages/OrdersPage';
 import MenuPage from './pages/MenuPage';
+import AdminPlatillos from './pages/AdminPlatillos';
+import { CartProvider } from './context/CartContext';
+import CheckoutPage from './pages/CheckoutPage';
 
 const NavigationWrapper = () => {
   const navigate = useNavigate();
@@ -14,6 +17,8 @@ const NavigationWrapper = () => {
       <Routes>
         <Route path="/" element={<MenuPage />} />
         <Route path="/orders" element={<OrdersPage />} />
+        <Route path="/adminPlatillos" element={<AdminPlatillos/>} />
+        <Route path="/checkout" element={<CheckoutPage />} />
       </Routes>
 
       {/* El Toolbar se queda fijo abajo y maneja el cambio de ruta */}
@@ -49,10 +54,12 @@ const NavigationWrapper = () => {
 
         <Link
           tabLink
-          icon={<Icon material={<MdAccountCircle className="text-gray-400" />} />}
-          className="!text-gray-400"
+          tabLinkActive={location.pathname === '/adminPlatillos'}
+          onClick={() => navigate('/adminPlatillos')}
+          icon={<Icon material={<MdReceiptLong className={location.pathname === '/adminPlatillos' ? 'text-orange-500' : 'text-gray-400'} />} />}
+          className={location.pathname === '/orders' ? '!text-orange-500' : '!text-gray-400'}
         >
-          <span className="text-[10px] mt-1">Account</span>
+          <span className="text-[10px] mt-1">Admin</span>
         </Link>
       </Toolbar>
     </AppKonstaUI>
@@ -65,7 +72,9 @@ function App() {
   return (
     <>
       <Router>
-        <NavigationWrapper/>
+        <CartProvider>
+          <NavigationWrapper />
+        </CartProvider>
       </Router>
     </>
   )
