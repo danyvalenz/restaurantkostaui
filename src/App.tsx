@@ -7,6 +7,8 @@ import MenuPage from './pages/MenuPage';
 import AdminPlatillos from './pages/AdminPlatillos';
 import { CartProvider } from './context/CartContext';
 import CheckoutPage from './pages/CheckoutPage';
+import { KitchenPage } from './pages/cocina/KitchenPage';
+import { KitchenLogin } from './pages/cocina/KitchenLogin';
 
 const NavigationWrapper = () => {
   const navigate = useNavigate();
@@ -16,6 +18,8 @@ const NavigationWrapper = () => {
     <AppKonstaUI theme="ios" safeAreas>
       <Routes>
         <Route path="/" element={<MenuPage />} />
+        <Route path="/kitchen-login" element={<KitchenLogin />} />
+        <Route path="/kitchen" element={<KitchenPage />} />
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/adminPlatillos" element={<AdminPlatillos/>} />
         <Route path="/checkout" element={<CheckoutPage />} />

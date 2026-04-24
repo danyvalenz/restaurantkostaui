@@ -1,23 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Añadimos useEffect
 import {
   Page, Navbar, Block, Link, Segmented, SegmentedButton,
-  Button, Card, Icon, Preloader,Badge
+  Button, Card, Icon, Preloader, Badge
 } from 'konsta/react';
 import { useFetchMenu } from '../viewModel/useFetchMenu';
 import { useCart } from '../context/CartContext';
-import { MdOutlineShoppingCart } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
+import { MdOutlineShoppingCart, MdPlace } from 'react-icons/md'; // Añadimos icono de ubicación
+import { useNavigate, useLocation } from 'react-router-dom'; // Añadimos useLocation
 
 const MenuPage: React.FC = () => {
   const { menuItems, loading } = useFetchMenu();
   const [selectedCategory, setSelectedCategory] = useState('Entradas');
   const { addToCart, totalItems } = useCart();
   const navigate = useNavigate();
+  
+  // Lógica para detectar la mesa
+  const location = useLocation();
+  const [mesa, setMesa] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const mesaURL = params.get('mesa');
+    if (mesaURL) {
+      setMesa(mesaURL);
+      // Lo guardamos en el storage para que el Checkout sepa qué mesa es
+      localStorage.setItem('mesa_actual', mesaURL);
+    }
+  }, [location]);
 
   return (
     <Page className="!bg-gray-50">
-    <Navbar
-        title="Atelier Cuisine"
+      <Navbar
+        title={
+          <div className="flex flex-col items-center">
+            <span className="leading-tight">Atelier Cuisine</span>
+            {mesa && (
+              <span className="text-[10px] font-bold text-orange-500 uppercase tracking-widest flex items-center gap-1">
+                <MdPlace /> Mesa {mesa}
+              </span>
+            )}
+          </div>
+        }
         right={
           <Link iconOnly onClick={() => navigate('/checkout')}> 
             <div className="relative">
@@ -31,6 +54,13 @@ const MenuPage: React.FC = () => {
           </Link>
         }
       />
+
+      {/* Si no hay mesa detectada, podríamos mostrar un aviso o dejarlo pasar */}
+      {!mesa && (
+        <Block className="!my-2 text-center text-[10px] text-gray-400 italic">
+          Ordenando para llevar / Barra
+        </Block>
+      )}
 
       {/* Selector de Categorías */}
       <Block className="!my-4 px-4">
@@ -49,7 +79,6 @@ const MenuPage: React.FC = () => {
         </Segmented>
       </Block>
 
-      {/* Lista de Platos desde Firebase */}
       <Block className="!mt-0 px-4">
         {loading ? (
           <div className="flex justify-center p-10"><Preloader /></div>
@@ -58,7 +87,6 @@ const MenuPage: React.FC = () => {
             .filter((item) => item.categoria === selectedCategory)
             .map((item, index) => (
               <Card key={item.id} className="!m-0 !mb-4 !p-4 !shadow-none !border-none bg-white rounded-2xl">
-                {/* Alternamos la posición de la imagen según el índice (par/impar) */}
                 <div className={`flex items-start gap-4 ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
                   <img src={item.imagen} alt={item.nombre} className="w-24 h-24 rounded-2xl object-cover" />
                   <div className="flex-grow flex flex-col justify-between h-24">
@@ -85,8 +113,6 @@ const MenuPage: React.FC = () => {
             ))
         )}
       </Block>
-
-      {/* ... Resto de tu código (Chef's Selection, etc.) ... */}
     </Page>
   );
 };

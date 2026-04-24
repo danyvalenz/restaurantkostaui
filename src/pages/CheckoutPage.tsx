@@ -15,13 +15,14 @@ const CheckoutPage = () => {
       // 1. Intentamos obtener el token del dispositivo (pide permiso al usuario)
       // Nota: Si el usuario rechaza, devolverá null, pero el pedido se enviará igual.
       const tokenPush = await obtenerTokenNotificacion();
+      const mesaParaFirebase = localStorage.getItem('mesa_actual') || "Barra";
 
       // 2. Guardamos la comanda en Firestore
       await addDoc(collection(db, "comandas"), {
         platillos: cart,
         total: totalPrecio,
         estado: 'pendiente',
-        mesa: "Mesa 1", 
+        mesa: mesaParaFirebase, 
         fecha: serverTimestamp(),
         clientToken: tokenPush, // <--- Aquí guardamos la "dirección" para la notificación
       });

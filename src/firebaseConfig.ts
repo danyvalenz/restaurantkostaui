@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getMessaging, getToken } from "firebase/messaging";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD6r4KM1kihNQrBzWDRpFJSnvereeqc3Rk",
@@ -17,6 +18,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+export const auth = getAuth(app);
 export const messaging = getMessaging(app);
 export const VAPID_KEY = "BDFG5LC0X9ziWIabis37n_rVDz6NjhFlq9ftg4bJhWW5KmXFxnfOuVsddQ7tsoI7eEHya_QHe0_BMzDXBgEYyWc";
 
