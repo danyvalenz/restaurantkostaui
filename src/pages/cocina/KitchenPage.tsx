@@ -5,10 +5,12 @@ import { onAuthStateChanged } from 'firebase/auth'; // <--- IMPORTANTE
 import { db, auth } from '../../firebaseConfig';
 import { MdTimer, MdPlayArrow, MdCheck, MdDoneAll } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
 
 // 1. COMPONENTE TIMER (Solo para el tiempo)
 const OrderTimer = ({ startTime }: { startTime: any }) => {
   const [timeElapsed, setTimeElapsed] = useState('0:00');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!startTime) return;
@@ -28,6 +30,15 @@ const OrderTimer = ({ startTime }: { startTime: any }) => {
 
   return <span>{timeElapsed}</span>;
 };
+
+const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/kitchen-login'); // Redirigir al login
+    } catch (error) {
+      console.error("Error al cerrar sesión", error);
+    }
+  };
 
 // 2. COMPONENTE PRINCIPAL
 export const KitchenPage = () => {
@@ -73,8 +84,20 @@ export const KitchenPage = () => {
 
   return (
     <Page className="!bg-slate-950 text-white pb-10">
-      <Navbar title="DASHBOARD COCINA" className="!bg-slate-900" />
-
+        <Navbar 
+                title="DASHBOARD COCINA" 
+                className="!bg-slate-900" 
+                // 3. Agregar el botón a la derecha
+                right={
+                <Button 
+                    clear 
+                    className="!text-red-500 !font-bold" 
+                    onClick={handleLogout}
+                >
+                    SALIR
+                </Button>
+                }
+            />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
         {comandas.map((orden) => (
           <Card 
